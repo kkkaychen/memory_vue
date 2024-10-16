@@ -10,8 +10,10 @@
           slim
           text="新增商品"
           variant="flat"
+          @click="openNewProductDialog"
         />
       </h3>
+      
 
       <v-alert
         v-if="errMsg"
@@ -27,6 +29,78 @@
         type="success"
       >{{ successMsg }}</v-alert>
 
+      <!-- 新增商品的對話框 -->
+      <v-dialog v-model="newProductDialog" max-width="600">
+        <v-card>
+          <v-card-title>新增商品</v-card-title>
+          <v-card-text>
+            <v-row dense>
+              <v-col cols="12" md="6">
+                <v-text-field label="商品名稱" v-model="newProductData.tktName"></v-text-field>
+              </v-col>
+
+              <v-col cols="12" md="6">
+                <v-text-field label="庫存數量" type="number" v-model="newProductData.originalAmount"></v-text-field>
+              </v-col>
+
+              <v-col cols="12" md="6">
+                <v-text-field label="價格" type="number" v-model="newProductData.price"></v-text-field>
+              </v-col>
+
+                  <v-col cols="12" md="6">
+                    <v-text-field label="地區" v-model="newProductData.locate"></v-text-field>
+                  </v-col>
+
+                  <v-col cols="12" md="6">
+                    <v-text-field label="開始時間" v-model="newProductData.tktStartDate"></v-text-field>
+                  </v-col>
+
+                  <v-col cols="12" md="6">
+                    <v-text-field label="結束時間" v-model="newProductData.tktEndDate"></v-text-field>
+                  </v-col>
+
+                  <v-col cols="12" md="6">
+                    <v-text-field label="詳細說明" v-model="newProductData.instruction"></v-text-field>
+                  </v-col>
+
+                  <v-col cols="12" md="6">
+                    <v-text-field label="地址" v-model="newProductData.address"></v-text-field>
+                  </v-col>
+
+                  <v-col cols="12" md="6">
+                    <v-text-field label="注意事項" v-model="newProductData.notice"></v-text-field>
+                  </v-col>
+
+                  <v-col cols="12" md="6">
+                    <v-text-field label="使用說明" v-model="newProductData.howUse"></v-text-field>
+                  </v-col>
+
+                  <v-col cols="12" md="6">
+                    <v-text-field label="政策說明" v-model="newProductData.canxpolicy"></v-text-field>
+                  </v-col>
+
+                  <v-col cols="12" md="6">
+                    <v-text-field label="狀態" type="number" v-model="newProductData.tktStatus"></v-text-field>
+                  </v-col>
+
+                  <v-col cols="12" md="6">
+                    <v-text-field label="售出數量" type="number" v-model="newProductData.soldAmount" disabled></v-text-field>
+                  </v-col>
+
+                  <v-col cols="12" md="6">
+                    <v-text-field label="種類" type="number" v-model="newProductData.kind"></v-text-field>
+                  </v-col>
+            </v-row>
+          </v-card-text>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn text @click="newProductDialog = false">取消</v-btn>
+            <v-btn color="primary" @click="saveNewProduct">保存</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
       <v-data-table
         class="bg-transparent"
         :headers="headers"
@@ -35,7 +109,7 @@
         hide-default-footer
       >
         <template #item.actions="{ item }">
-          <v-dialog v-model="dialog" max-width="600">
+          <v-dialog v-model="dialog" max-width="800">
             <template #activator="{ on, attrs }">
               <!-- 確保 v-bind 和 v-on 傳遞有效值 -->
               <v-btn class="text-none" color="secondary" min-width="0" slim v-bind="attrs || {}" v-on="on || {}" @click="goToEditPage(item.tktNo)">
@@ -165,6 +239,24 @@ const editData = ref({
   kind: 0
 })
 
+const newProductDialog = ref(false)
+const newProductData = ref({
+  tktName: '',
+  originalAmount: 0,
+  price: 0,
+  tktStartDate: '',
+  tktEndDate: '',
+  locate: '',
+  instruction: '',
+  address: '',
+  notice: '',
+  howUse: '',
+  canxpolicy: '',
+  tktStatus: 0,
+  soldAmount: 0,
+  kind: 0
+})
+
 // 抓取商品列表
 const fetchProducts = async (page = 1) => {
   try {
@@ -212,13 +304,36 @@ const saveChanges = async (id) => {
       successMsg.value = ''
     }, 2000)
   } catch (error) {
-    console.error('無法修改商品資訊', error)
     errMsg.value = error
     setTimeout(() => {
       errMsg.value = ''
     }, 2000)
   }
 }
+
+const openNewProductDialog = () => {
+  newProductDialog.value = true
+}
+
+const saveNewProduct = async() => {
+  newProductDialog.value = false
+  
+  try {
+    const res = await axios.post('http://localhost:8080/ticket/generate', newProductData.value)
+    successMsg.value = '商品儲存成功'
+    setTimeout(() => {
+      successMsg.value = ''
+    }, 2000)
+  } catch (error) {
+    errMsg.value = error
+    setTimeout(() => {
+      errMsg.value = ''
+    }, 2000)
+  }
+  
+}
+
+
 
 
 </script>
