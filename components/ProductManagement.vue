@@ -17,15 +17,19 @@
 
       <v-alert
         v-if="errMsg"
-        dense
-        text
-        type="success"
+        border="start"
+        close-label="Close Alert"
+        variant="tonal"
+        closable
+        type="error"
       >{{ errMsg }}</v-alert>
 
       <v-alert
         v-if="successMsg"
-        dense
-        text
+        border="start"
+        close-label="Close Alert"
+        variant="tonal"
+        closable
         type="success"
       >{{ successMsg }}</v-alert>
 
@@ -194,7 +198,7 @@
       <v-pagination
         v-model="currentPage"
         :length="totalPages"
-        @update:modelValue="onPageChange"
+        @update:modelValue="onPageChange" 
       ></v-pagination>
     </section>
   </v-container>
@@ -213,6 +217,23 @@ const headers = [
   { title: '', key: 'actions' }
 ]
 
+const emptyProduct = () => ({
+  tktName: '',
+  originalAmount: 0,
+  price: 0,
+  tktStartDate: '',
+  tktEndDate: '',
+  locate: '',
+  instruction: '',
+  address: '',
+  notice: '',
+  howUse: '',
+  canxpolicy: '',
+  tktStatus: 0,
+  soldAmount: 0,
+  kind: 0
+})
+
 const items = ref([])
 const totalItems = ref(0)
 const totalPages = ref(1)
@@ -222,40 +243,10 @@ const errMsg = ref('')
 const successMsg = ref('')
 
 const dialog = ref(false)
-const editData = ref({
-  tktName: '',
-  originalAmount: 0,
-  price: 0,
-  tktStartDate: '',
-  tktEndDate: '',
-  locate: '',
-  instruction: '',
-  address: '',
-  notice: '',
-  howUse: '',
-  canxpolicy: '',
-  tktStatus: 0,
-  soldAmount: 0,
-  kind: 0
-})
+const editData = ref(emptyProduct())
 
 const newProductDialog = ref(false)
-const newProductData = ref({
-  tktName: '',
-  originalAmount: 0,
-  price: 0,
-  tktStartDate: '',
-  tktEndDate: '',
-  locate: '',
-  instruction: '',
-  address: '',
-  notice: '',
-  howUse: '',
-  canxpolicy: '',
-  tktStatus: 0,
-  soldAmount: 0,
-  kind: 0
-})
+const newProductData = ref(emptyProduct())
 
 // 抓取商品列表
 const fetchProducts = async (page = 1) => {
@@ -270,10 +261,7 @@ const fetchProducts = async (page = 1) => {
     totalItems.value = res.data.totalElements
     totalPages.value = res.data.totalPages
   } catch (error) {
-    errMsg.value = error
-    setTimeout(() => {
-      errMsg.value = ''
-    }, 2000)
+    showMessage(error.message, 'error')
   }
 }
 
@@ -284,6 +272,22 @@ const onPageChange = (newPage) => {
 onMounted(() => {
   fetchProducts(currentPage.value)
 })
+
+
+const showMessage = (message, type = 'error') => {
+  if (type === 'error') {
+    errMsg.value = message
+    setTimeout(() => {
+      errMsg.value = ''
+    }, 2000)
+  } else {
+    successMsg.value = message
+    setTimeout(() => {
+      successMsg.value = ''
+    }, 2000)
+  }
+}
+
 
 // 點擊編輯按鈕時，載入商品資訊
 const goToEditPage = (id) => {
@@ -299,15 +303,9 @@ const saveChanges = async (id) => {
   try {
     const res = await axios.patch(`http://localhost:8080/ticket/${editData.value.tktNo}/update`, editData.value)
     dialog.value = false
-    successMsg.value = '商品修改儲存成功'
-    setTimeout(() => {
-      successMsg.value = ''
-    }, 2000)
+    showMessage('商品修改儲存成功', 'success')
   } catch (error) {
-    errMsg.value = error
-    setTimeout(() => {
-      errMsg.value = ''
-    }, 2000)
+    showMessage(error.message, 'error')
   }
 }
 
@@ -320,15 +318,9 @@ const saveNewProduct = async() => {
   
   try {
     const res = await axios.post('http://localhost:8080/ticket/generate', newProductData.value)
-    successMsg.value = '商品儲存成功'
-    setTimeout(() => {
-      successMsg.value = ''
-    }, 2000)
+    showMessage('商品新增成功', 'success')
   } catch (error) {
-    errMsg.value = error
-    setTimeout(() => {
-      errMsg.value = ''
-    }, 2000)
+    showMessage(error.message, 'error')
   }
   
 }
