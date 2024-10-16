@@ -13,6 +13,20 @@
         />
       </h3>
 
+      <v-alert
+        v-if="errMsg"
+        dense
+        text
+        type="success"
+      >{{ errMsg }}</v-alert>
+
+      <v-alert
+        v-if="successMsg"
+        dense
+        text
+        type="success"
+      >{{ successMsg }}</v-alert>
+
       <v-data-table
         class="bg-transparent"
         :headers="headers"
@@ -46,7 +60,47 @@
                   </v-col>
 
                   <v-col cols="12" md="6">
+                    <v-text-field label="地區" v-model="editData.locate"></v-text-field>
+                  </v-col>
+
+                  <v-col cols="12" md="6">
+                    <v-text-field label="開始時間" v-model="editData.tktStartDate"></v-text-field>
+                  </v-col>
+
+                  <v-col cols="12" md="6">
+                    <v-text-field label="結束時間" v-model="editData.tktEndDate"></v-text-field>
+                  </v-col>
+
+                  <v-col cols="12" md="6">
+                    <v-text-field label="詳細說明" v-model="editData.instruction"></v-text-field>
+                  </v-col>
+
+                  <v-col cols="12" md="6">
+                    <v-text-field label="地址" v-model="editData.address"></v-text-field>
+                  </v-col>
+
+                  <v-col cols="12" md="6">
+                    <v-text-field label="注意事項" v-model="editData.notice"></v-text-field>
+                  </v-col>
+
+                  <v-col cols="12" md="6">
+                    <v-text-field label="使用說明" v-model="editData.howUse"></v-text-field>
+                  </v-col>
+
+                  <v-col cols="12" md="6">
+                    <v-text-field label="政策說明" v-model="editData.canxpolicy"></v-text-field>
+                  </v-col>
+
+                  <v-col cols="12" md="6">
+                    <v-text-field label="狀態" type="number" v-model="editData.tktStatus"></v-text-field>
+                  </v-col>
+
+                  <v-col cols="12" md="6">
                     <v-text-field label="售出數量" type="number" v-model="editData.soldAmount" disabled></v-text-field>
+                  </v-col>
+
+                  <v-col cols="12" md="6">
+                    <v-text-field label="種類" type="number" v-model="editData.kind"></v-text-field>
                   </v-col>
                 </v-row>
               </v-card-text>
@@ -56,7 +110,7 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn text="取消" variant="plain" @click="dialog = false"></v-btn>
-                <v-btn color="primary" text="保存" variant="tonal" @click="saveChanges(item.id)"></v-btn>
+                <v-btn color="primary" text="保存" variant="tonal" @click="saveChanges(item.tktNo)"></v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -90,15 +144,28 @@ const totalItems = ref(0)
 const totalPages = ref(1)
 const currentPage = ref(1)
 const itemsPerPage = ref(5)
+const errMsg = ref('')
+const successMsg = ref('')
 
 const dialog = ref(false)
 const editData = ref({
   tktName: '',
   originalAmount: 0,
   price: 0,
-  soldAmount: 0
+  tktStartDate: '',
+  tktEndDate: '',
+  locate: '',
+  instruction: '',
+  address: '',
+  notice: '',
+  howUse: '',
+  canxpolicy: '',
+  tktStatus: 0,
+  soldAmount: 0,
+  kind: 0
 })
 
+// 抓取商品列表
 const fetchProducts = async (page = 1) => {
   try {
     const res = await axios.get('http://localhost:8080/ticket/all', {
@@ -111,7 +178,10 @@ const fetchProducts = async (page = 1) => {
     totalItems.value = res.data.totalElements
     totalPages.value = res.data.totalPages
   } catch (error) {
-    console.error('無法獲取商品列表', error)
+    errMsg.value = error
+    setTimeout(() => {
+      errMsg.value = ''
+    }, 2000)
   }
 }
 
@@ -133,9 +203,22 @@ const goToEditPage = (id) => {
   }
 }
 
-// 保存編輯後的更改
-const saveChanges = (id) => {
-  console.log('保存的商品數據：', editData.value)
-  dialog.value = false
+const saveChanges = async (id) => {
+  try {
+    const res = await axios.patch(`http://localhost:8080/ticket/${editData.value.tktNo}/update`, editData.value)
+    dialog.value = false
+    successMsg.value = '商品修改儲存成功'
+    setTimeout(() => {
+      successMsg.value = ''
+    }, 2000)
+  } catch (error) {
+    console.error('無法修改商品資訊', error)
+    errMsg.value = error
+    setTimeout(() => {
+      errMsg.value = ''
+    }, 2000)
+  }
 }
+
+
 </script>
