@@ -35,74 +35,87 @@
 
       <!-- 新增商品的對話框 -->
       <v-dialog v-model="newProductDialog" max-width="600">
-        <v-card>
-          <v-card-title>新增商品</v-card-title>
-          <v-card-text>
-            <v-row dense>
-              <v-col cols="12" md="6">
-                <v-text-field label="商品名稱" v-model="newProductData.tktName"></v-text-field>
-              </v-col>
+        <v-form ref="productForm" v-model="formValid">
+          <v-card>
+            <v-card-title>新增商品</v-card-title>
+            <v-card-text>
+              <v-row dense>
+                <v-col cols="12" md="6">
+                  <v-text-field label="商品名稱" v-model="newProductData.tktName" :rules="[requiredRule]" required></v-text-field>
+                </v-col>
 
-              <v-col cols="12" md="6">
-                <v-text-field label="庫存數量" type="number" v-model="newProductData.originalAmount"></v-text-field>
-              </v-col>
+                <v-col cols="12" md="6">
+                  <v-text-field label="庫存數量" type="number" v-model="newProductData.originalAmount" :rules="[requiredRule, positiveNumberRule]" required></v-text-field>
+                </v-col>
 
-              <v-col cols="12" md="6">
-                <v-text-field label="價格" type="number" v-model="newProductData.price"></v-text-field>
-              </v-col>
+                <v-col cols="12" md="6">
+                  <v-text-field label="價格" type="number" v-model="newProductData.price" :rules="[requiredRule, positiveNumberRule]" required></v-text-field>
+                </v-col>
 
-                  <v-col cols="12" md="6">
-                    <v-text-field label="地區" v-model="newProductData.locate"></v-text-field>
-                  </v-col>
+                    <v-col cols="12" md="6">
+                      <v-text-field label="地區" v-model="newProductData.locate" :rules="[requiredRule]" required></v-text-field>
+                    </v-col>
 
-                  <v-col cols="12" md="6">
-                    <v-text-field label="開始時間" v-model="newProductData.tktStartDate"></v-text-field>
-                  </v-col>
+                    <v-col cols="12" md="6">
+                      <v-text-field label="開始時間" v-model="newProductData.tktStartDate" :rules="[requiredRule]" required></v-text-field>
+                    </v-col>
 
-                  <v-col cols="12" md="6">
-                    <v-text-field label="結束時間" v-model="newProductData.tktEndDate"></v-text-field>
-                  </v-col>
+                    <v-col cols="12" md="6">
+                      <v-text-field label="結束時間" v-model="newProductData.tktEndDate" :rules="[requiredRule]" required></v-text-field>
+                    </v-col>
 
-                  <v-col cols="12" md="6">
-                    <v-text-field label="詳細說明" v-model="newProductData.instruction"></v-text-field>
-                  </v-col>
+                    <v-col cols="12" md="6">
+                      <v-text-field label="詳細說明" v-model="newProductData.instruction" :rules="[requiredRule]" required></v-text-field>
+                    </v-col>
 
-                  <v-col cols="12" md="6">
-                    <v-text-field label="地址" v-model="newProductData.address"></v-text-field>
-                  </v-col>
+                    <v-col cols="12" md="6">
+                      <v-text-field label="地址" v-model="newProductData.address" :rules="[requiredRule]" required></v-text-field>
+                    </v-col>
 
-                  <v-col cols="12" md="6">
-                    <v-text-field label="注意事項" v-model="newProductData.notice"></v-text-field>
-                  </v-col>
+                    <v-col cols="12" md="6">
+                      <v-text-field label="注意事項" v-model="newProductData.notice" :rules="[requiredRule]" required></v-text-field>
+                    </v-col>
 
-                  <v-col cols="12" md="6">
-                    <v-text-field label="使用說明" v-model="newProductData.howUse"></v-text-field>
-                  </v-col>
+                    <v-col cols="12" md="6">
+                      <v-text-field label="使用說明" v-model="newProductData.howUse" :rules="[requiredRule]" required></v-text-field>
+                    </v-col>
 
-                  <v-col cols="12" md="6">
-                    <v-text-field label="政策說明" v-model="newProductData.canxpolicy"></v-text-field>
-                  </v-col>
+                    <v-col cols="12" md="6">
+                      <v-text-field label="政策說明" v-model="newProductData.canxpolicy" :rules="[requiredRule]" required></v-text-field>
+                    </v-col>
 
-                  <v-col cols="12" md="6">
-                    <v-text-field label="狀態" type="number" v-model="newProductData.tktStatus"></v-text-field>
-                  </v-col>
+                    <v-col cols="12" md="6">
+                      <v-text-field label="狀態" type="number" v-model="newProductData.tktStatus" :rules="[requiredRule, positiveNumberRule]" required></v-text-field>
+                    </v-col>
 
-                  <v-col cols="12" md="6">
-                    <v-text-field label="售出數量" type="number" v-model="newProductData.soldAmount" disabled></v-text-field>
-                  </v-col>
+                    <v-col cols="12" md="6">
+                      <v-text-field label="售出數量" type="number" v-model="newProductData.soldAmount" disabled :rules="[requiredRule, positiveNumberRule]" required></v-text-field>
+                    </v-col>
 
-                  <v-col cols="12" md="6">
-                    <v-text-field label="種類" type="number" v-model="newProductData.kind"></v-text-field>
-                  </v-col>
-            </v-row>
-          </v-card-text>
+                    <v-col cols="12" md="6">
+                      <v-text-field label="種類" type="number" v-model="newProductData.kind" :rules="[requiredRule, positiveNumberRule]" required></v-text-field>
+                    </v-col>
+              </v-row>
+            </v-card-text>
 
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn text @click="newProductDialog = false">取消</v-btn>
-            <v-btn color="primary" @click="saveNewProduct">保存</v-btn>
-          </v-card-actions>
-        </v-card>
+            <v-col cols="12" md="6">
+              <v-file-input
+                label="File input"
+                prepend-icon="mdi-camera"
+                show-size
+                multiple
+                small-chips
+                @change="handleFileChange"
+              ></v-file-input>
+            </v-col>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn text @click="newProductDialog = false">取消</v-btn>
+              <v-btn color="primary" @click="submitForm">保存</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-form>
       </v-dialog>
 
       <v-data-table
@@ -139,6 +152,14 @@
 
                   <v-col cols="12" md="6">
                     <v-text-field label="地區" v-model="editData.locate"></v-text-field>
+                  </v-col>
+
+                  <!-- 在這裡加入圖片顯示部分 -->
+                  <v-col cols="12">
+                    <h3>商品圖片</h3>
+                    <div v-for="(image, index) in editData.imagesBase64" :key="index">
+                      <img :src="'data:image/jpeg;base64,' + image" alt="商品圖片" style="max-width: 100%; margin-bottom: 10px;" />
+                    </div>
                   </v-col>
 
                   <v-col cols="12" md="6">
@@ -231,7 +252,8 @@ const emptyProduct = () => ({
   canxpolicy: '',
   tktStatus: 0,
   soldAmount: 0,
-  kind: 0
+  kind: 0,
+  imagesBase64: [] 
 })
 
 const items = ref([])
@@ -248,6 +270,49 @@ const editData = ref(emptyProduct())
 const newProductDialog = ref(false)
 const newProductData = ref(emptyProduct())
 
+const formValid = ref(false)
+// 引用表單
+const productForm = ref(null)
+
+const requiredRule = value => !!value || '此欄位為必填'
+const positiveNumberRule = value => value > 0 || '必須是正數'
+
+
+const selectedFiles = ref([]);
+
+const handleFileChange = (event) => {
+  const files = event.target.files
+  
+  // 確認檔案是否選擇成功
+  if (files.length > 0) {
+    selectedFiles.value = files
+    console.log('Selected Files:', selectedFiles.value)
+  } else {
+    selectedFiles.value = []
+  }
+  
+  // 檢查每個檔案的大小
+  for (let i = 0; i < files.length; i++) {
+    console.log(`File ${i}: `, files[i].name, files[i].size, 'bytes');
+  }
+}
+
+
+const submitForm = () => {
+  // const form = ref('productForm').value
+  // console.log(productForm.value);
+  // console.log(productForm.value.validate());
+  
+  if (productForm.value.validate()) {
+    // 驗證通過
+    console.log('表單驗證通過，提交表單:', newProductData.value)
+    saveNewProduct()
+  } else {
+    // 驗證失敗
+    showMessage('驗證失敗：必填欄位請確認', 'error')
+  }
+}
+
 // 抓取商品列表
 const fetchProducts = async (page = 1) => {
   try {
@@ -258,6 +323,10 @@ const fetchProducts = async (page = 1) => {
       }
     })
     items.value = res.data.content
+
+    console.log(items.value);
+    
+
     totalItems.value = res.data.totalElements
     totalPages.value = res.data.totalPages
   } catch (error) {
@@ -315,9 +384,44 @@ const openNewProductDialog = () => {
 
 const saveNewProduct = async() => {
   newProductDialog.value = false
+
+  const formData = new FormData()
+
+  formData.append('tktName', newProductData.value.tktName);
+  formData.append('originalAmount', newProductData.value.originalAmount);
+  formData.append('price', newProductData.value.price);
+  formData.append('tktStartDate', newProductData.value.tktStartDate);
+  formData.append('tktEndDate', newProductData.value.tktEndDate);
+  formData.append('locate', newProductData.value.locate);
+  formData.append('instruction', newProductData.value.instruction);
+  formData.append('address', newProductData.value.address);
+  formData.append('notice', newProductData.value.notice);
+  formData.append('howUse', newProductData.value.howUse);
+  formData.append('canxpolicy', newProductData.value.canxpolicy);
+  formData.append('tktStatus', newProductData.value.tktStatus);
+  formData.append('soldAmount', newProductData.value.soldAmount);
+  formData.append('kind', newProductData.value.kind);
+
+  // 附加檔案到 formData
+  console.log('selectedFiles.value.length: ' + selectedFiles.value.length);
+  
+  for (let i = 0; i < selectedFiles.value.length; i++) {
+    formData.append('files', selectedFiles.value[i]);
+  }
+
+  // Print out all FormData key-value pairs
+  for (let [key, value] of formData.entries()) {
+    console.log(`${key}: ${value}`);
+  }
+  
   
   try {
-    const res = await axios.post('http://localhost:8080/ticket/generate', newProductData.value)
+    await axios.post('http://localhost:8080/ticket/generate', formData, {
+  headers: {
+    'Content-Type': 'multipart/form-data',
+  },
+})
+    
     showMessage('商品新增成功', 'success')
   } catch (error) {
     showMessage(error.message, 'error')
