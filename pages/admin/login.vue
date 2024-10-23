@@ -32,7 +32,7 @@ const tokenCookie = useCookie('jwt_token');  // 定義一個名為 jwt_token 的
 // 登入邏輯
 const login = async () => {
   try {
-    const response = await axios.post('http://localhost:8080/auth/generateToken', {
+    const response = await axios.post('http://localhost:8080/auth/authenticate', {
       userName: userName.value,
       password: password.value
     });

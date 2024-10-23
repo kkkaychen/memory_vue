@@ -32,7 +32,7 @@
               <v-list density="compact" nav>
                 <v-list-item append-icon="mdi-cog-outline" link title="Settings" />
   
-                <v-list-item append-icon="mdi-logout" link title="Logout" />
+                <v-list-item append-icon="mdi-logout" link title="Logout" @click="logout()"/>
               </v-list>
             </v-menu>
           </v-btn>
@@ -63,10 +63,19 @@
   import ProductManagement from '~/components/ProductManagement.vue'
   import CouponManagement from '~/components/CouponManagement.vue'
   import Report from '~/components/Report.vue'
+  import { useRouter } from 'vue-router'
   
   const drawer = ref(true)
   const selectedItem = ref('會員管理')  // 預設選中的項目
-  
+  const router = useRouter()
+  const tokenCookie = useCookie('jwt_token');  // 定義一個名為 jwt_token 的 Cookie
+
+  const logout = async() => {
+    tokenCookie.value = null;
+    // 跳轉到登錄頁面
+    router.push('/admin/login');
+  }
+
   // 根據選擇的項目動態返回對應的組件
   const currentComponent = computed(() => {
     switch (selectedItem.value) {
