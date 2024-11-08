@@ -256,6 +256,8 @@ const emptyProduct = () => ({
   imagesBase64: [] 
 })
 
+const accessToken = useCookie('access_token');  // 定義一個名為 jwt_token 的 Cookie
+
 const items = ref([])
 const totalItems = ref(0)
 const totalPages = ref(1)
@@ -370,7 +372,13 @@ const goToEditPage = (id) => {
 
 const saveChanges = async (id) => {
   try {
-    const res = await axios.patch(`http://localhost:8080/ticket/${editData.value.tktNo}/update`, editData.value)
+    const res = await axios.patch(`http://localhost:8080/ticket/${editData.value.tktNo}/update`, editData.value,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          },
+        }
+    )
     dialog.value = false
     showMessage('商品修改儲存成功', 'success')
   } catch (error) {

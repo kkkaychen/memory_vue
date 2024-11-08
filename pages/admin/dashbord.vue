@@ -58,23 +58,29 @@
   
   <script setup>
   import { ref, computed } from 'vue'
-  import MemberManagement from '~/components/MemberManagement.vue'
-  import OrderManagement from '~/components/OrderManagement.vue'
-  import ProductManagement from '~/components/ProductManagement.vue'
-  import CouponManagement from '~/components/CouponManagement.vue'
-  import Report from '~/components/Report.vue'
+  import MemberManagement from '~/components/admin/MemberManagement.vue'
+  import OrderManagement from '~/components/admin/OrderManagement.vue'
+  import ProductManagement from '~/components/admin/ProductManagement.vue'
+  import CouponManagement from '~/components/admin/CouponManagement.vue'
+  import Report from '~/components/admin/Report.vue'
   import { useRouter } from 'vue-router'
   
   const drawer = ref(true)
   const selectedItem = ref('會員管理')  // 預設選中的項目
-  const router = useRouter()
-  const tokenCookie = useCookie('jwt_token');  // 定義一個名為 jwt_token 的 Cookie
 
-  const logout = async() => {
-    tokenCookie.value = null;
+  const accessToken = useCookie('emp_access_token');
+  const refreshToken = useCookie('emp_refresh_token');
+
+  // 登出
+  const logout = () => {
+    // 清除 accessToken 和 refreshToken
+    accessToken.value = null;
+    refreshToken.value = null;
+
     // 跳轉到登錄頁面
-    router.push('/admin/login');
-  }
+    navigateTo('/admin/login');
+
+  };
 
   // 根據選擇的項目動態返回對應的組件
   const currentComponent = computed(() => {
